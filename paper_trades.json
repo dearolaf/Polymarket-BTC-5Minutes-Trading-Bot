@@ -1,0 +1,155 @@
+[
+  {
+    "timestamp": "2026-05-21T06:14:09.893173+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T06:24:00.494074+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T06:34:00.111630+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T06:44:00.785248+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T06:54:00.407415+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T07:04:00.030318+00:00",
+    "direction": "LONG",
+    "size_usd": 2.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T07:14:00.659755+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "LOSS"
+  },
+  {
+    "timestamp": "2026-05-21T07:24:00.278959+00:00",
+    "direction": "LONG",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "LOSS"
+  },
+  {
+    "timestamp": "2026-05-21T07:34:00.887092+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T07:44:00.500093+00:00",
+    "direction": "SHORT",
+    "size_usd": 2.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T07:54:00.129130+00:00",
+    "direction": "LONG",
+    "size_usd": 4.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T08:04:00.757320+00:00",
+    "direction": "LONG",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T08:14:00.384243+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T08:24:00.015259+00:00",
+    "direction": "SHORT",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T08:34:00.642199+00:00",
+    "direction": "SHORT",
+    "size_usd": 2.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T08:44:00.264828+00:00",
+    "direction": "LONG",
+    "size_usd": 1.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  },
+  {
+    "timestamp": "2026-05-21T08:54:00.877491+00:00",
+    "direction": "SHORT",
+    "size_usd": 2.0,
+    "price": 0.5,
+    "signal_score": 61.0,
+    "signal_confidence": 0.61,
+    "outcome": "WIN"
+  }
+]
