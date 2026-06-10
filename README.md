@@ -1,16 +1,36 @@
 # Polymarket BTC 5-Minute Trading Bot
 
+> **BTC 5-minute trading bot** for [Polymarket](https://polymarket.com) — automated UP/DOWN bets on Bitcoin 5m markets (`btc-updown-5m-*`). Paper trade first, go live when ready.
+
+<!--
+GitHub About (paste into repo settings):
+
+Description:
+BTC 5-minute trading bot for Polymarket — predicts Bitcoin UP/DOWN on 5m markets, paper + live mode, Coinbase signals, auto-restart.
+
+Website:
+https://github.com/dearolaf/Polymarket-BTC-5Minutes-Trading-Bot
+
+Topics:
+polymarket, bitcoin, btc, trading-bot, crypto-bot, algorithmic-trading, 5-minute-trading, prediction-markets, nautilus-trader, python, scalping, defi
+-->
+
 [![Python 3.14+](https://img.shields.io/badge/python-3.14+-blue.svg)](https://www.python.org/downloads/)
 [![NautilusTrader](https://img.shields.io/badge/nautilus-1.226.0-green.svg)](https://nautilustrader.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Polymarket](https://img.shields.io/badge/Polymarket-CLOB-purple)](https://polymarket.com)
+[![BTC 5m](https://img.shields.io/badge/BTC-5--minute-orange)](https://polymarket.com)
+[![Trading Bot](https://img.shields.io/badge/trading-bot-automated-blue)](https://github.com/dearolaf/Polymarket-BTC-5Minutes-Trading-Bot)
 
-An algorithmic trading bot for **Polymarket's 5-minute BTC (Bitcoin) up/down markets** (`btc-updown-5m-{timestamp}`). It predicts whether BTC will go up or down over the next 5-minute window and places small market orders on Polymarket.
+An **algorithmic trading bot** for **Polymarket's 5-minute BTC (Bitcoin) up/down markets** (`btc-updown-5m-{timestamp}`). It predicts whether BTC will go **up or down** over the next 5-minute window and places small market orders on Polymarket.
+
+**Looking for:** Polymarket bot · BTC 5 min bot · Bitcoin 5-minute trading bot · crypto prediction market bot · automated BTC scalping · `btc-updown-5m` trader
 
 ---
 
 ## Table of Contents
 
+- [Who This Is For](#who-this-is-for)
 - [How It Works](#how-it-works)
 - [Features](#features)
 - [Prerequisites](#prerequisites)
@@ -25,6 +45,20 @@ An algorithmic trading bot for **Polymarket's 5-minute BTC (Bitcoin) up/down mar
 - [Disclaimer](#disclaimer)
 - [Community](#community)
 - [Donate](#donate)
+
+---
+
+## Who This Is For
+
+| You want… | This repo… |
+|-----------|------------|
+| A **BTC 5-minute trading bot** on Polymarket | Trades `btc-updown-5m-*` slugs every 5 minutes |
+| **Paper trading** before risking money | Simulation mode by default (no `--live`) |
+| **Small stakes** ($1/trade default) | Configurable via `MARKET_BUY_USD` |
+| **API keys** for Polymarket CLOB | Use [Generate Keys](https://polymarkettool.onrender.com/) (free tool) |
+| **24/7 uptime** | `5m_bot_runner.py` auto-restarts on crash |
+
+**Not included:** Binance/Bybit spot bots, generic crypto scalpers, or 15m/SOL Polymarket markets (BTC 5m only).
 
 ---
 
@@ -411,6 +445,9 @@ A: The bot defaults to $1 per trade. You can start with as little as $10–20 in
 **Q: What command should I run day-to-day?**  
 A: `python 5m_bot_runner.py --live` for live trading. Use `python 5m_bot_runner.py` (no flags) to test in simulation first.
 
+**Q: Is this a Binance or Bybit BTC 5-minute bot?**  
+A: No. This bot trades **Polymarket prediction markets** (`btc-updown-5m-*`), not exchange spot/futures. You bet UP or DOWN on 5-minute Bitcoin price direction.
+
 **Q: Is this profitable?**  
 A: There is no guarantee. Past simulation results do not predict future live performance. Always test in simulation mode first, then start with the minimum stake.
 
@@ -450,8 +487,9 @@ A: Polymarket BTC 5-minute up/down markets (`btc-updown-5m-{timestamp}`). It doe
 
 - **GitHub Issues** — bugs and feature requests
 - **Telegram** — [@dearolaf](https://t.me/dearolaf)
+- **Related tool** — [Generate Polymarket API keys](https://polymarkettool.onrender.com/)
 
-If you find this project useful, please star the repo on GitHub.
+If you find this project useful, please **star the repo** on GitHub — it helps others discover this BTC 5-minute Polymarket bot.
 
 ---
 
