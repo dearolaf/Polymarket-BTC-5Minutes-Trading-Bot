@@ -55,7 +55,7 @@ An **algorithmic trading bot** for **Polymarket's 5-minute BTC (Bitcoin) up/down
 | A **BTC 5-minute trading bot** on Polymarket | Trades `btc-updown-5m-*` slugs every 5 minutes |
 | **Paper trading** before risking money | Simulation mode by default (no `--live`) |
 | **Small stakes** ($1/trade default) | Configurable via `MARKET_BUY_USD` |
-| **API keys** for Polymarket CLOB | Use [Generate Keys](https://polymarkettool.onrender.com/) (free tool) |
+| **API keys** for Polymarket CLOB | Use [Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/) (free tool) |
 | **24/7 uptime** | `5m_bot_runner.py` auto-restarts on crash |
 
 **Not included:** Binance/Bybit spot bots, generic crypto scalpers, or 15m/SOL Polymarket markets (BTC 5m only).
@@ -172,9 +172,9 @@ Create a `.env` file in the project root with at least these credentials:
 
 If you are not sure how to generate keys, please use the tool below. You can generate keys easily with one click.
 
-**[Generate Keys](https://polymarkettool.onrender.com/)** — derive your CLOB API credentials from your wallet private key:
+**[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** — derive your CLOB API credentials from your wallet private key:
 
-1. Open **[Generate Keys](https://polymarkettool.onrender.com/)** in your browser.
+1. Open **[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** in your browser.
 2. Paste your wallet key and click **Get keys**:
    - **Email / Google login:** on Polymarket, use **Reveal Private Key** ([Magic export](https://reveal.magic.link/polymarket)) — that revealed string is your private key.
 3. Copy `apiKey`, `secret`, and `passphrase` into your `.env` as `POLYMARKET_API_KEY`, `POLYMARKET_API_SECRET`, and `POLYMARKET_PASSPHRASE`.
@@ -285,7 +285,7 @@ All settings go in `.env`. Key groups:
 | `POLYMARKET_PASSPHRASE` | Polymarket API passphrase |
 | `POLYMARKET_FUNDER` | Proxy wallet address (if applicable) |
 
-If you are not sure how to generate keys, use **[Generate Keys](https://polymarkettool.onrender.com/)** — you can create them easily with one click. Paste the key from **Reveal Private Key** (email/Google) or your wallet export (MetaMask), then copy `apiKey`, `secret`, and `passphrase` into `.env`.
+If you are not sure how to generate keys, use **[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** — you can create them easily with one click. Paste the key from **Reveal Private Key** (email/Google) or your wallet export (MetaMask), then copy `apiKey`, `secret`, and `passphrase` into `.env`.
 
 ### Predictor
 
@@ -487,7 +487,7 @@ A: Polymarket BTC 5-minute up/down markets (`btc-updown-5m-{timestamp}`). It doe
 
 - **GitHub Issues** — bugs and feature requests
 - **Telegram** — [@dearolaf](https://t.me/dearolaf)
-- **Related tool** — [Generate Polymarket API keys](https://polymarkettool.onrender.com/)
+- **Related tool** — [Generate Polymarket API keys](https://polymarkettool-272623624738.us-central1.run.app/)
 
 If you find this project useful, please **star the repo** on GitHub — it helps others discover this BTC 5-minute Polymarket bot.
 
