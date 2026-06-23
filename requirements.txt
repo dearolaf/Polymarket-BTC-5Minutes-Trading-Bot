@@ -93,3 +93,4 @@ web3==7.14.1
 websockets==15.0.1
 win32_setctime==1.2.0
 yarl==1.22.0
+streamlit>=1.40.0

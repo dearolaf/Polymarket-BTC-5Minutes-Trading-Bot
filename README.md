@@ -2,6 +2,22 @@
 
 > **BTC 5-minute trading bot** for [Polymarket](https://polymarket.com) — automated UP/DOWN bets on Bitcoin 5m markets (`btc-updown-5m-*`). Paper trade first, go live when ready.
 
+## Easy Mode — no coding required
+
+**Easy Mode** is the simplest way to run this bot. You do not need to use the terminal or edit config files by hand. Everything is done from a **web dashboard** in your browser.
+
+| Step | What to do |
+|------|------------|
+| **1. Install (once)** | Windows: double-click **`Install.bat`** · Mac/Ubuntu: `./install.sh` |
+| **2. Open dashboard** | Windows: double-click **`Start.bat`** · Mac/Ubuntu: `./start.sh` |
+| **3. Run the bot** | In the browser: **Setup keys** → paste Polymarket credentials → **Start practice** (test) or **Start live** (real money) |
+
+- **Practice** = simulation only, no real money  
+- **Live** = real orders on Polymarket (USDC required)  
+- Generate API keys with **[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** — one click  
+
+Full Easy Mode guide: [Easy Mode (no coding)](#easy-mode-no-coding) · Developers: [Quick Start (terminal)](#quick-start)
+
 <!--
 GitHub About (paste into repo settings):
 
@@ -31,6 +47,7 @@ An **algorithmic trading bot** for **Polymarket's 5-minute BTC (Bitcoin) up/down
 ## Table of Contents
 
 - [Who This Is For](#who-this-is-for)
+- [Easy Mode (no coding)](#easy-mode-no-coding)
 - [How It Works](#how-it-works)
 - [Features](#features)
 - [Prerequisites](#prerequisites)
@@ -53,12 +70,49 @@ An **algorithmic trading bot** for **Polymarket's 5-minute BTC (Bitcoin) up/down
 | You want… | This repo… |
 |-----------|------------|
 | A **BTC 5-minute trading bot** on Polymarket | Trades `btc-updown-5m-*` slugs every 5 minutes |
+| **No coding / easy setup** | Use **Easy Mode** — `Install.bat` + `Start.bat` + web dashboard |
 | **Paper trading** before risking money | Simulation mode by default (no `--live`) |
 | **Small stakes** ($1/trade default) | Configurable via `MARKET_BUY_USD` |
 | **API keys** for Polymarket CLOB | Use [Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/) (free tool) |
 | **24/7 uptime** | `5m_bot_runner.py` auto-restarts on crash |
 
 **Not included:** Binance/Bybit spot bots, generic crypto scalpers, or 15m/SOL Polymarket markets (BTC 5m only).
+
+---
+
+## Easy Mode (no coding)
+
+Use the **web dashboard** — no terminal commands needed.
+
+### Step 1 — Install (once)
+
+| OS | Action |
+|----|--------|
+| **Windows** | Double-click **`Install.bat`** |
+| **macOS / Ubuntu** | `chmod +x install.sh start.sh` then `./install.sh` |
+
+### Step 2 — Open dashboard
+
+| OS | Action |
+|----|--------|
+| **Windows** | Double-click **`Start.bat`** |
+| **macOS / Ubuntu** | `./start.sh` |
+
+Your browser opens the control panel.
+
+### Step 3 — Run the bot
+
+1. Sidebar → **Setup keys** → **[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** → paste keys → **Save settings**
+2. Sidebar → **Control panel** → **Start practice** (simulation, no real money)
+3. When ready → **Start live** (real money)
+
+| Dashboard button | What it does |
+|------------------|--------------|
+| **Start practice** | Simulation — safe to test |
+| **Start live** | Real Polymarket orders |
+| **Stop bot** | Stops trading |
+
+See **Activity log** in the sidebar for trade results.
 
 ---
 
@@ -137,14 +191,18 @@ When enabled via env vars, a loss doubles the next stake ($1 → $2 → $4 → �
 
 ## Quick Start
 
-### 1. Clone the repository
+> **Not a programmer?** Use [Easy Mode](#easy-mode-no-coding) above (`Install.bat` → `Start.bat`).
+
+### Developer setup (terminal)
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/dearolaf/Polymarket-BTC-5Minutes-Trading-Bot.git
 cd Polymarket-BTC-5Minutes-Trading-Bot
 ```
 
-### 2. Create a virtual environment
+#### 2. Create a virtual environment
 
 ```bash
 # Windows
@@ -156,7 +214,7 @@ python -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Install dependencies
+#### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -164,7 +222,7 @@ pip install -r requirements.txt
 
 This installs all packages including `py-clob-client-v2` from GitHub automatically. No separate `pip install git+...` step is needed.
 
-### 4. Create your `.env` file
+#### 4. Create your `.env` file
 
 Create a `.env` file in the project root with at least these credentials:
 
@@ -203,7 +261,7 @@ COINBASE_PRODUCT_ID=BTC-USD
 
 See [Configuration](#configuration) for the full list of options.
 
-### 5. Run in simulation first (recommended)
+#### 5. Run in simulation first (recommended)
 
 ```bash
 python 5m_bot_runner.py
@@ -211,7 +269,7 @@ python 5m_bot_runner.py
 
 This runs in **simulation mode** by default — no real money is used. Watch `log.txt` for predictor submissions and results.
 
-### 6. Run live trading
+#### 6. Run live trading
 
 ```bash
 python 5m_bot_runner.py --live
@@ -380,6 +438,9 @@ The bot exports Prometheus metrics via `monitoring/grafana_exporter.py`.
 
 ```text
 Polymarket-BTC-5Minutes-Trading-Bot/
+├── Install.bat / install.sh     # One-time setup (Easy Mode)
+├── Start.bat / start.sh         # Web dashboard (Easy Mode)
+├── easy_app/                    # Streamlit UI for non-coders
 ├── 5m_bot_runner.py             # Recommended entry point (auto-restart wrapper)
 ├── bot.py                       # Main trading bot (NautilusTrader + strategy)
 ├── redis_control.py             # Switch sim/live at runtime via Redis
@@ -443,7 +504,7 @@ python 5m_bot_runner.py
 A: The bot defaults to $1 per trade. You can start with as little as $10–20 in USDC on Polygon, but keep extra for gas and martingale if enabled.
 
 **Q: What command should I run day-to-day?**  
-A: `python 5m_bot_runner.py --live` for live trading. Use `python 5m_bot_runner.py` (no flags) to test in simulation first.
+A: **Easy Mode:** double-click `Start.bat` (Windows) or run `./start.sh` (Mac/Linux), then use **Start practice** or **Start live** in the dashboard. **Terminal:** `python 5m_bot_runner.py --live` for live, or `python 5m_bot_runner.py` for simulation.
 
 **Q: Is this a Binance or Bybit BTC 5-minute bot?**  
 A: No. This bot trades **Polymarket prediction markets** (`btc-updown-5m-*`), not exchange spot/futures. You bet UP or DOWN on 5-minute Bitcoin price direction.
