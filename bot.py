@@ -781,7 +781,7 @@ class IntegratedBTCStrategy(Strategy):
     - Correct timing for market switching
     """
 
-    def __init__(self, redis_client=None, enable_grafana=True, test_mode=False):
+    def __init__(self, redis_client=None, enable_grafana=True, test_mode=False, simulation=False):
         super().__init__()
 
         self.bot_start_time = datetime.now(timezone.utc)
@@ -809,7 +809,7 @@ class IntegratedBTCStrategy(Strategy):
         # Nautilus
         self.instrument_id = None
         self.redis_client = redis_client
-        self.current_simulation_mode = False
+        self.current_simulation_mode = bool(simulation)
 
         # Store ALL BTC instruments
         self.all_btc_instruments: List[Dict] = []
@@ -3519,6 +3519,7 @@ def run_integrated_bot(simulation: bool = False, enable_grafana: bool = True, te
                 redis_client=redis_client,
                 enable_grafana=enable_grafana,
                 test_mode=test_mode,
+                simulation=simulation,
             )
 
             print("\nBuilding Nautilus node...")
