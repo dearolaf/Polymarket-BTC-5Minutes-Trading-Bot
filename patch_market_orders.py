@@ -67,8 +67,8 @@ def apply_market_order_patch():
         from py_clob_client_v2.exceptions import PolyException
 
 
-        # --- Read USD amount from environment (default $1) ---
-        _DEFAULT_USD_AMOUNT = float(os.getenv("MARKET_BUY_USD", "1.0"))
+        # --- Read USD amount from environment (default $10) ---
+        _DEFAULT_USD_AMOUNT = float(os.getenv("MARKET_BUY_USD", "10.0"))
         # FAK no-match + HTTP timeouts: more attempts + longer gaps help thin books right after round open.
         _RETRIES = max(1, min(16, int(os.getenv("MARKET_ORDER_CLOB_RETRIES", "8"))))
         _RETRY_MS = max(50, min(8000, int(os.getenv("MARKET_ORDER_CLOB_RETRY_MS", "1000"))))

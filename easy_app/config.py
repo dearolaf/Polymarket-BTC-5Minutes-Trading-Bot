@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Tuple
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 ENV_PATH = PROJECT_ROOT / ".env"
@@ -18,7 +18,35 @@ SETUP_KEYS = (
     "USE_LIGHTWEIGHT_PREDICTOR",
 )
 
+ADVANCED_KEYS = (
+    "SUBMIT_SECONDS_BEFORE_BOUNDARY",
+    "PREDICTOR_EVAL_POST_END_SEC",
+    "MARTINGALE_BASE_USD",
+    "MARTINGALE_MAX_STAKE_USD",
+    "POLYMARKET_AUTO_REDEEM",
+    "PREDICTOR_MIN_SCORE",
+    "PREDICTOR_POLL_SECONDS",
+    "BOT_VERBOSE",
+)
+
+ALL_MANAGED_KEYS: Tuple[str, ...] = SETUP_KEYS + ADVANCED_KEYS
+
+ADVANCED_DEFAULTS: Dict[str, str] = {
+    "SUBMIT_SECONDS_BEFORE_BOUNDARY": "60",
+    "PREDICTOR_EVAL_POST_END_SEC": "90",
+    "MARTINGALE_BASE_USD": "1",
+    "MARTINGALE_MAX_STAKE_USD": "16",
+    "POLYMARKET_AUTO_REDEEM": "1",
+    "PREDICTOR_MIN_SCORE": "0.50",
+    "PREDICTOR_POLL_SECONDS": "5",
+    "BOT_VERBOSE": "0",
+}
+
 GENERATE_KEYS_URL = "https://polymarkettool-272623624738.us-central1.run.app/"
+TELEGRAM_URL = "https://t.me/dearolaf"
+WHATSAPP_URL = "https://wa.me/13192101283"
+WHATSAPP_DISPLAY = "+1 319 210 1283"
+SUPPORT_EMAIL = "xapple126@gmail.com"
 
 
 def ensure_env_file() -> None:
@@ -28,7 +56,7 @@ def ensure_env_file() -> None:
         ENV_PATH.write_text(ENV_EXAMPLE.read_text(encoding="utf-8"), encoding="utf-8")
     else:
         ENV_PATH.write_text(
-            "\n".join(f"{k}=" for k in SETUP_KEYS) + "\n",
+            "\n".join(f"{k}=" for k in ALL_MANAGED_KEYS) + "\n",
             encoding="utf-8",
         )
 
@@ -64,7 +92,7 @@ def save_env(updates: Dict[str, str]) -> None:
                 continue
         out.append(line)
 
-    for key in SETUP_KEYS:
+    for key in ALL_MANAGED_KEYS:
         if key in updates and key not in seen:
             out.append(f"{key}={current.get(key, '')}")
 

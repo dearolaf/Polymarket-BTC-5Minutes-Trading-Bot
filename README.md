@@ -6,17 +6,38 @@
 
 **Easy Mode** is the simplest way to run this bot. You do not need to use the terminal or edit config files by hand. Everything is done from a **web dashboard** in your browser.
 
+| Plan | Includes |
+|------|----------|
+| **Free** | Dashboard, practice/live trading, API setup, standard predictor (defaults), log viewer |
+| **Premium** | Better predictor logic, martingale recovery, performance analytics, advanced tuning, log downloads, priority support |
+
+**Upgrade to Premium** — contact [@dearolaf](https://t.me/dearolaf) · WhatsApp [+1 319 210 1283](https://wa.me/13192101283) · [xapple126@gmail.com](mailto:xapple126@gmail.com)
+
 | Step | What to do |
 |------|------------|
 | **1. Install (once)** | Windows: double-click **`Install.bat`** · Mac/Ubuntu: `./install.sh` |
 | **2. Open dashboard** | Windows: double-click **`Start.bat`** · Mac/Ubuntu: `./start.sh` |
-| **3. Run the bot** | In the browser: **Setup keys** → paste Polymarket credentials → **Start practice** (test) or **Start live** (real money) |
+| **3. Run the bot** | In the browser: **Setup** → paste Polymarket credentials → **Control** → **Start practice** (test) or **Start live** (real money) |
 
 - **Practice** = simulation only, no real money  
 - **Live** = real orders on Polymarket (USDC required)  
 - Generate API keys with **[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** — one click  
 
-Full Easy Mode guide: [Easy Mode (no coding)](#easy-mode-no-coding) · Developers: [Quick Start (terminal)](#quick-start)
+### Dashboard pages
+
+| Page | Free | Premium |
+|------|------|---------|
+| **Dashboard** | ✓ | ✓ |
+| **Control** | ✓ | ✓ |
+| **Setup** (keys & basic) | ✓ | ✓ |
+| **Predictor logic** | Standard defaults | Enhanced ensemble + tuning |
+| **Logs** (view) | ✓ | ✓ |
+| **Performance** (charts & stats) | — | ✓ |
+| **Setup → Advanced** | — | ✓ |
+| **Logs** (download) | — | ✓ |
+| **Plans** (why Premium is better) | ✓ | ✓ |
+
+Full guide: [Easy Mode (no coding)](#easy-mode-no-coding) · [Plans (Free & Premium)](#plans-free--premium) · Developers: [Quick Start (terminal)](#quick-start)
 
 <!--
 GitHub About (paste into repo settings):
@@ -47,6 +68,7 @@ An **algorithmic trading bot** for **Polymarket's 5-minute BTC (Bitcoin) up/down
 ## Table of Contents
 
 - [Who This Is For](#who-this-is-for)
+- [Plans (Free & Premium)](#plans-free--premium)
 - [Easy Mode (no coding)](#easy-mode-no-coding)
 - [How It Works](#how-it-works)
 - [Features](#features)
@@ -72,7 +94,7 @@ An **algorithmic trading bot** for **Polymarket's 5-minute BTC (Bitcoin) up/down
 | A **BTC 5-minute trading bot** on Polymarket | Trades `btc-updown-5m-*` slugs every 5 minutes |
 | **No coding / easy setup** | Use **Easy Mode** — `Install.bat` + `Start.bat` + web dashboard |
 | **Paper trading** before risking money | Simulation mode by default (no `--live`) |
-| **Small stakes** ($1/trade default) | Configurable via `MARKET_BUY_USD` |
+| **Small stakes** ($10/trade default) | Configurable via `MARKET_BUY_USD` |
 | **API keys** for Polymarket CLOB | Use [Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/) (free tool) |
 | **24/7 uptime** | `5m_bot_runner.py` auto-restarts on crash |
 
@@ -80,9 +102,80 @@ An **algorithmic trading bot** for **Polymarket's 5-minute BTC (Bitcoin) up/down
 
 ---
 
+## Plans (Free & Premium)
+
+This project offers two tiers. **Free** lets you run the bot with standard settings. **Premium** is for traders who want **better predictor logic**, full analytics, advanced tuning, and direct support.
+
+### Why Premium is better than Free
+
+| Area | Free | Premium |
+|------|------|---------|
+| **Predictor logic** | Standard on/off with fixed default score (0.50) | **Enhanced ensemble** — Coinbase BTC price + 5-minute candles + Polymarket CLOB order-book signals with tunable min score & faster polling |
+| **Signal quality** | Trades on default-qualified signals only | **Skip weak setups** — adjust predictor sensitivity, poll interval, and timing to focus on higher-confidence entries |
+| **Loss recovery** | Fixed stake every trade | **Martingale recovery** — configurable base & max stake (e.g. $1 → $2 → $4, capped at your limit) |
+| **Order timing** | Default submit & evaluation windows | **Precision timing** — custom seconds-before-boundary and post-round evaluation delay |
+| **Auto-redeem** | Default behavior | **Full control** — tune auto-redeem and logging for faster winning-position claims |
+| **Analytics** | Basic dashboard counts | **Full Performance page** — win rate, streaks, cumulative charts, UP/DOWN breakdown, result history |
+| **Configuration** | Keys + basic stake settings | **Advanced dashboard tab** — martingale, timing, predictor score, poll speed, auto-redeem (no manual `.env` editing) |
+| **Logs** | View in browser only | **Download** `log.txt` and `orders.log` for audit, review, and support |
+| **Support** | GitHub Issues / community | **Priority 1-on-1** — Telegram, WhatsApp, email |
+| **Updates** | Public stable release | **Early access** to predictor tuning & Premium strategy presets |
+
+### Free plan
+
+| Feature | Included |
+|---------|----------|
+| Web dashboard (Easy Mode) | ✓ |
+| Practice & live trading (BTC 5m) | ✓ |
+| API key setup | ✓ |
+| Basic trade settings (stake, predictor on/off) | ✓ |
+| Standard predictor with default thresholds | ✓ |
+| Dashboard overview & recent signals | ✓ |
+| Activity log viewer (read-only) | ✓ |
+| Auto-restart bot runner | ✓ |
+| Community support (GitHub Issues) | ✓ |
+
+**Free limitations:** fixed predictor score, no martingale, no custom timing, no Performance charts, no advanced settings tab, no log downloads, no priority support.
+
+### Premium plan
+
+| Feature | Included |
+|---------|----------|
+| Everything in Free | ✓ |
+| Enhanced predictor logic & tuned signal filters | ✓ |
+| Multi-source ensemble (Coinbase + 5m candles + CLOB book) | ✓ |
+| Custom predictor min score & poll interval | ✓ |
+| Martingale recovery (configurable base & max stake) | ✓ |
+| Precision order timing (submit window & eval delay) | ✓ |
+| Auto-redeem optimization | ✓ |
+| Performance analytics & cumulative win charts | ✓ |
+| Win-rate, streak & UP/DOWN direction breakdown | ✓ |
+| Advanced strategy settings in dashboard | ✓ |
+| Downloadable trade & order logs | ✓ |
+| Priority 1-on-1 support | ✓ |
+| Optimized Premium presets & early predictor updates | ✓ |
+
+### Upgrade to Premium
+
+Contact us to unlock Premium on your setup:
+
+| Channel | Contact |
+|---------|---------|
+| **Telegram** | [@dearolaf](https://t.me/dearolaf) |
+| **WhatsApp** | [+1 319 210 1283](https://wa.me/13192101283) |
+| **Email** | [xapple126@gmail.com](mailto:xapple126@gmail.com) |
+
+After purchase, Premium is activated by adding this to your `.env`:
+
+```env
+BOT_PLAN=premium
+```
+
+---
+
 ## Easy Mode (no coding)
 
-Use the **web dashboard** — no terminal commands needed.
+Use the **web dashboard** — no terminal commands needed. The sidebar shows your current plan (**Free** or **Premium**).
 
 ### Step 1 — Install (once)
 
@@ -98,21 +191,24 @@ Use the **web dashboard** — no terminal commands needed.
 | **Windows** | Double-click **`Start.bat`** |
 | **macOS / Ubuntu** | `./start.sh` |
 
-Your browser opens the control panel.
+Your browser opens the dashboard control panel.
 
 ### Step 3 — Run the bot
 
-1. Sidebar → **Setup keys** → **[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** → paste keys → **Save settings**
-2. Sidebar → **Control panel** → **Start practice** (simulation, no real money)
-3. When ready → **Start live** (real money)
+1. Sidebar → **Setup** → **API keys** tab → **[Generate Keys](https://polymarkettool-272623624738.us-central1.run.app/)** → paste keys → **Save keys**
+2. Sidebar → **Control** → **Start practice** (simulation, no real money)
+3. Sidebar → **Plans** → compare Free vs Premium or upgrade
+4. Sidebar → **Performance** (Premium) → watch win rate and charts as trades complete
+5. When ready → **Start live** (real money)
 
-| Dashboard button | What it does |
-|------------------|--------------|
-| **Start practice** | Simulation — safe to test |
-| **Start live** | Real Polymarket orders |
-| **Stop bot** | Stops trading |
-
-See **Activity log** in the sidebar for trade results.
+| Dashboard page | What it does |
+|----------------|--------------|
+| **Dashboard** | Live metrics, streak, recent signals |
+| **Performance** | Win-rate charts and UP/DOWN stats *(Premium)* |
+| **Control** | Start practice / live, stop bot |
+| **Setup** | Keys, trade size, advanced strategy settings *(Advanced = Premium)* |
+| **Logs** | Trade summary; downloads *(Premium)* |
+| **Plans** | Free vs Premium comparison and upgrade contacts |
 
 ---
 
@@ -145,7 +241,7 @@ flowchart TD
    - Coinbase 5-minute candle context (open vs close of the window)
    - Polymarket CLOB order-book imbalance
 5. **It picks UP or DOWN** — the predictor always chooses a direction (no "skip" signal).
-6. **It places an order** — in live mode, a market buy for the UP (YES) or DOWN (NO) token. Default stake is **$1** per trade (`MARKET_BUY_USD=1.0`).
+6. **It places an order** — in live mode, a market buy for the UP (YES) or DOWN (NO) token. Default stake is **$10** per trade (`MARKET_BUY_USD=10.0`).
 7. **It waits for resolution** — after the 5-minute window ends, the bot checks whether the bet won or lost (via Polymarket's official result by default).
 8. **It logs everything** — trade submissions and results go to `log.txt` and `logs/orders.log`.
 9. **Repeat** — the bot targets the next eligible 5-minute market. By default it submits in the **last 60 seconds before the next slug opens**.
@@ -168,9 +264,10 @@ When enabled via env vars, a loss doubles the next stake ($1 → $2 → $4 → �
 
 | Feature | Description |
 |---------|-------------|
+| **Premium dashboard** | Streamlit UI with Free & Premium plans, win-rate analytics, and advanced settings |
 | **5-minute BTC markets** | Trades `btc-updown-5m-*` Polymarket slugs |
 | **Lightweight predictor** | Coinbase price + 5m candles + CLOB book ensemble |
-| **Small stakes** | $1 default per trade; configurable via `.env` |
+| **Small stakes** | $10 default per trade; configurable via `.env` |
 | **Simulation first** | Paper trading by default — no real orders unless `--live` |
 | **Auto-restart wrapper** | `5m_bot_runner.py` keeps the bot running 24/7 |
 | **Auto-redeem** | Optionally redeems winning positions automatically |
@@ -255,7 +352,7 @@ REDIS_DB=2
 
 # Core trading settings
 USE_LIGHTWEIGHT_PREDICTOR=1
-MARKET_BUY_USD=1.0
+MARKET_BUY_USD=10.0
 COINBASE_PRODUCT_ID=BTC-USD
 ```
 
@@ -362,7 +459,7 @@ If you are not sure how to generate keys, use **[Generate Keys](https://polymark
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `MARKET_BUY_USD` | `1.0` | USD amount per market buy order |
+| `MARKET_BUY_USD` | `10.0` | USD amount per market buy order |
 | `SUBMIT_SECONDS_BEFORE_BOUNDARY` | `60` | Submit in the last N seconds before next slug opens |
 | `SUBMIT_SECONDS_AFTER_BOUNDARY` | auto | Seconds after current slug open for alternate submit path |
 | `PREDICTOR_EVAL_POST_END_SEC` | `90` | Seconds to wait after market end before scoring |
@@ -440,7 +537,13 @@ The bot exports Prometheus metrics via `monitoring/grafana_exporter.py`.
 Polymarket-BTC-5Minutes-Trading-Bot/
 ├── Install.bat / install.sh     # One-time setup (Easy Mode)
 ├── Start.bat / start.sh         # Web dashboard (Easy Mode)
-├── easy_app/                    # Streamlit UI for non-coders
+├── easy_app/                    # Premium Streamlit dashboard
+│   ├── main.py                  # Dashboard pages (control, stats, setup)
+│   ├── stats.py                 # Log parsing & performance analytics
+│   ├── theme.py                 # Modern UI styling
+│   ├── plans.py                 # Free & Premium plan definitions
+│   ├── config.py                # .env read/write helpers
+│   └── process.py               # Start/stop bot subprocess
 ├── 5m_bot_runner.py             # Recommended entry point (auto-restart wrapper)
 ├── bot.py                       # Main trading bot (NautilusTrader + strategy)
 ├── redis_control.py             # Switch sim/live at runtime via Redis
@@ -548,6 +651,8 @@ A: Polymarket BTC 5-minute up/down markets (`btc-updown-5m-{timestamp}`). It doe
 
 - **GitHub Issues** — bugs and feature requests
 - **Telegram** — [@dearolaf](https://t.me/dearolaf)
+- **WhatsApp** — [+1 319 210 1283](https://wa.me/13192101283)
+- **Email** — [xapple126@gmail.com](mailto:xapple126@gmail.com)
 - **Related tool** — [Generate Polymarket API keys](https://polymarkettool-272623624738.us-central1.run.app/)
 
 If you find this project useful, please **star the repo** on GitHub — it helps others discover this BTC 5-minute Polymarket bot.

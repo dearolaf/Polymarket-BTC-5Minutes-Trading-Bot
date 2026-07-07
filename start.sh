@@ -10,7 +10,7 @@ fi
 # shellcheck disable=SC1091
 source venv/bin/activate
 
-echo "Opening dashboard in your browser..."
+echo "Opening Premium dashboard in your browser..."
 echo "Keep this terminal open while the bot is running."
 echo
 

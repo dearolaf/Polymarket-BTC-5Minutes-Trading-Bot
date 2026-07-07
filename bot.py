@@ -3281,7 +3281,7 @@ def run_integrated_bot(simulation: bool = False, enable_grafana: bool = True, te
     print(f"  Initial Mode: {'SIMULATION' if simulation else 'LIVE TRADING'}")
     print(f"  Redis Control: {'Enabled' if redis_client else 'Disabled'}")
     print(f"  Grafana: {'Enabled' if enable_grafana else 'Disabled'}")
-    print(f"  Max Trade Size (initial env): ${os.getenv('MARKET_BUY_USD', '1.00')}")
+    print(f"  Max Trade Size (initial env): ${os.getenv('MARKET_BUY_USD', '10.00')}")
     print(
         f"  Predictor Martingale: ${float(MARTINGALE_BASE_USD):.0f} on win; "
         f"on each loss double the last stake until ${float(MARTINGALE_MAX_STAKE_USD):.0f} "

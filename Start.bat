@@ -1,5 +1,5 @@
 @echo off
-title Polymarket BTC Bot - Dashboard
+title Polymarket BTC Bot - Premium Dashboard
 cd /d "%~dp0"
 
 if not exist venv\Scripts\activate.bat (
@@ -10,7 +10,7 @@ if not exist venv\Scripts\activate.bat (
 
 call venv\Scripts\activate.bat
 
-echo Opening dashboard in your browser...
+echo Opening Premium dashboard in your browser...
 echo Keep this window open while the bot is running.
 echo.
 
