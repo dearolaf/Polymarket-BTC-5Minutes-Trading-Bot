@@ -92,11 +92,9 @@ PREMIUM_WHY_BETTER: List[Dict[str, str]] = [
 ]
 
 FREE_LIMITATIONS: List[str] = [
-    "Predictor uses default score threshold (0.50) — cannot tune sensitivity",
-    "No martingale or custom recovery sizing",
-    "No custom submit timing or evaluation delays",
-    "No Performance analytics page or charts",
-    "No advanced settings tab in the dashboard",
+    "Fixed predictor score threshold (0.50) — no dashboard tuning",
+    "No trend/candle alignment filters (Premium defaults)",
+    "No Performance charts or advanced settings tab",
     "Cannot download trade or order logs",
     "No priority direct support",
 ]

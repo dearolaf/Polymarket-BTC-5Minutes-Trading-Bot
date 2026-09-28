@@ -68,11 +68,17 @@ def get_status() -> Dict[str, Any]:
         "pid": pid,
         "live": bool(info.get("live")),
         "started_at": info.get("started_at"),
-        "mode_label": "Live trading" if info.get("live") else "Practice (simulation)",
+        "last_exit_code": info.get("last_exit_code"),
+        "restart_count": info.get("restart_count"),
+        "mode_label": (
+            "Live trading"
+            if info.get("live")
+            else ("Test mode" if info.get("test_mode") else "Practice (simulation)")
+        ),
     }
 
 
-def start_bot(*, live: bool) -> None:
+def start_bot(*, live: bool, test_mode: bool = False) -> None:
     status = get_status()
     if status.get("running"):
         raise RuntimeError("Bot is already running. Stop it first.")
@@ -83,6 +89,8 @@ def start_bot(*, live: bool) -> None:
     args = [sys.executable, str(RUNNER)]
     if live:
         args.append("--live")
+    elif test_mode:
+        args.append("--test-mode")
 
     popen_kwargs: Dict[str, Any] = {"cwd": str(PROJECT_ROOT)}
     if sys.platform == "win32":
@@ -96,7 +104,9 @@ def start_bot(*, live: bool) -> None:
         {
             "pid": proc.pid,
             "live": live,
+            "test_mode": test_mode,
             "started_at": datetime.now(timezone.utc).isoformat(),
+            "restart_count": 0,
         }
     )
 

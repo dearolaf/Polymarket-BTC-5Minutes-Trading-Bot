@@ -178,9 +178,10 @@ def render_dashboard() -> None:
         else:
             st.info("Bot is stopped")
     with r2:
-        stake = env.get("MARKET_BUY_USD", "10.0")
+        base = env.get("MARTINGALE_BASE_USD") or env.get("MARKET_BUY_USD", "10.0")
+        mg_max = env.get("MARTINGALE_MAX_STAKE_USD", "16")
         predictor = "On" if env.get("USE_LIGHTWEIGHT_PREDICTOR", "1") == "1" else "Off"
-        st.caption(f"Stake **${stake}** · Predictor **{predictor}**")
+        st.caption(f"Base stake **${base}** (max **${mg_max}**) · Predictor **{predictor}**")
     with r3:
         if status.get("running"):
             st.caption(f"Uptime: **{format_uptime(status.get('started_at'))}**")
@@ -268,7 +269,7 @@ def render_control() -> None:
         "Start practice mode first. Switch to live only when you are confident.",
     )
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3, c4 = st.columns(4)
 
     with c1:
         if st.button("▶ Start practice", use_container_width=True, disabled=status.get("running")):
@@ -283,13 +284,25 @@ def render_control() -> None:
                     st.error(str(exc))
 
     with c2:
+        if st.button("▶ Test mode", use_container_width=True, disabled=status.get("running")):
+            if not credentials_complete():
+                st.error("Go to **Setup** and save your Polymarket credentials first.")
+            else:
+                try:
+                    start_bot(live=False, test_mode=True)
+                    st.success("Test mode started (faster scoring).")
+                    refresh()
+                except Exception as exc:
+                    st.error(str(exc))
+
+    with c3:
         if st.button("▶ Start live", use_container_width=True, disabled=status.get("running")):
             if not credentials_complete():
                 st.error("Go to **Setup** and save your Polymarket credentials first.")
             else:
                 st.session_state["confirm_live"] = True
 
-    with c3:
+    with c4:
         if st.button("■ Stop bot", use_container_width=True, disabled=not status.get("running")):
             stop_bot()
             st.success("Bot stopped.")
@@ -321,8 +334,12 @@ def render_control() -> None:
                 "Process ID": status.get("pid"),
                 "Started": status.get("started_at", "—"),
                 "Uptime": format_uptime(status.get("started_at")),
+                "Restarts": status.get("restart_count", 0),
+                "Last exit code": status.get("last_exit_code", "—"),
             }
         )
+    elif status.get("last_exit_code") is not None:
+        st.warning(f"Bot stopped (last exit code: {status.get('last_exit_code')}). Check `logs/runner.log`.")
     else:
         st.caption("No active session.")
 
@@ -370,11 +387,12 @@ def render_setup() -> None:
     with tab_basic:
         with st.form("basic_form"):
             trade_usd = st.number_input(
-                "Amount per trade (USD)",
+                "Base stake per trade (USD)",
                 min_value=1.0,
                 max_value=100.0,
-                value=float(env.get("MARKET_BUY_USD") or "10.0"),
+                value=float(env.get("MARTINGALE_BASE_USD") or env.get("MARKET_BUY_USD") or "10.0"),
                 step=1.0,
+                help="Used as martingale base stake. Synced to MARKET_BUY_USD and MARTINGALE_BASE_USD.",
             )
             predictor_on = st.checkbox(
                 "Use smart predictor (recommended)",
@@ -386,6 +404,7 @@ def render_setup() -> None:
             save_env(
                 {
                     "MARKET_BUY_USD": f"{trade_usd:.2f}",
+                    "MARTINGALE_BASE_USD": f"{trade_usd:.0f}",
                     "USE_LIGHTWEIGHT_PREDICTOR": "1" if predictor_on else "0",
                 }
             )

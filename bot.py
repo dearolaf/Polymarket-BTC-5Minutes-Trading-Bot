@@ -476,28 +476,43 @@ def append_predictor_order_summary_line(
 BTC_SLUG_HOURS_AHEAD_DEFAULT = 6.0
 BTC_SLUG_COUNT_CAP_DEFAULT = 96   # ~8h of 5m slots + prior interval; keeps URL under typical nginx limits
 
+BOT_VERSION = "4.0.0"
+
 # ---------------------------------------------------------------------------
 # Lightweight predictor mode (Coinbase-based), for next 5m direction.
 # ---------------------------------------------------------------------------
+BOT_PLAN = os.getenv("BOT_PLAN", "free").strip().lower()
+IS_PREMIUM_PLAN = BOT_PLAN == "premium"
+
 USE_LIGHTWEIGHT_PREDICTOR = os.getenv("USE_LIGHTWEIGHT_PREDICTOR", "").strip().lower() in (
     "1",
     "true",
     "yes",
     "on",
 )
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    raw = os.getenv(name)
+    if raw is None or str(raw).strip() == "":
+        return default
+    return str(raw).strip().lower() in ("1", "true", "yes", "on")
+
+
 try:
-    PREDICTOR_MIN_SCORE = max(0.0, min(5.0, float(os.getenv("PREDICTOR_MIN_SCORE", "0.50"))))
+    _default_min_score = "0.55" if IS_PREMIUM_PLAN and os.getenv("PREDICTOR_MIN_SCORE") is None else "0.50"
+    PREDICTOR_MIN_SCORE = max(
+        0.0,
+        min(5.0, float(os.getenv("PREDICTOR_MIN_SCORE", _default_min_score))),
+    )
 except ValueError:
-    PREDICTOR_MIN_SCORE = 0.50
+    PREDICTOR_MIN_SCORE = 0.55 if IS_PREMIUM_PLAN else 0.50
 try:
     PREDICTOR_WINDOW_SAMPLES = max(10, min(120, int(os.getenv("PREDICTOR_WINDOW_SAMPLES", "60"))))
 except ValueError:
     PREDICTOR_WINDOW_SAMPLES = 60
-PREDICTOR_REQUIRE_TREND_ALIGN = os.getenv("PREDICTOR_REQUIRE_TREND_ALIGN", "0").strip().lower() in (
-    "1",
-    "true",
-    "yes",
-    "on",
+PREDICTOR_REQUIRE_TREND_ALIGN = _env_bool(
+    "PREDICTOR_REQUIRE_TREND_ALIGN", IS_PREMIUM_PLAN
 )
 PREDICTOR_USE_5M_CANDLE = os.getenv("PREDICTOR_USE_5M_CANDLE", "1").strip().lower() in (
     "1",
@@ -517,15 +532,10 @@ PREDICTOR_USE_CLOB_BOOK = os.getenv("PREDICTOR_USE_CLOB_BOOK", "1").strip().lowe
     "yes",
     "on",
 )
-PREDICTOR_REQUIRE_CANDLE_ALIGN = os.getenv("PREDICTOR_REQUIRE_CANDLE_ALIGN", "0").strip().lower() in (
-    "1",
-    "true",
-    "yes",
-    "on",
+PREDICTOR_REQUIRE_CANDLE_ALIGN = _env_bool(
+    "PREDICTOR_REQUIRE_CANDLE_ALIGN", IS_PREMIUM_PLAN
 )
-PREDICTOR_REQUIRE_VOLUME_CONFIRM = os.getenv(
-    "PREDICTOR_REQUIRE_VOLUME_CONFIRM", "0"
-).strip().lower() in ("1", "true", "yes", "on")
+PREDICTOR_REQUIRE_VOLUME_CONFIRM = _env_bool("PREDICTOR_REQUIRE_VOLUME_CONFIRM", False)
 try:
     PREDICTOR_MIN_BAR_MOVE = max(
         0.0, min(0.01, float(os.getenv("PREDICTOR_MIN_BAR_MOVE", "0.00015")))
@@ -538,7 +548,11 @@ PREDICTOR_CONTRARIAN = os.getenv("PREDICTOR_CONTRARIAN", "0").strip().lower() in
     "yes",
     "on",
 )
-PREDICTOR_POLL_SECONDS = max(1, min(30, int(os.getenv("PREDICTOR_POLL_SECONDS", "5"))))
+try:
+    _default_poll = "3" if IS_PREMIUM_PLAN and os.getenv("PREDICTOR_POLL_SECONDS") is None else "5"
+    PREDICTOR_POLL_SECONDS = max(1, min(30, int(os.getenv("PREDICTOR_POLL_SECONDS", _default_poll))))
+except ValueError:
+    PREDICTOR_POLL_SECONDS = 3 if IS_PREMIUM_PLAN else 5
 # Predictor submit timing (UTC slug = 5m):
 # - ``SUBMIT_SECONDS_BEFORE_BOUNDARY`` (default 60): only in the last N seconds *before the next
 #   slug opens*, submit for that next market (``order_market`` path). This is "1 min before next round".
@@ -591,10 +605,15 @@ except ValueError:
     PREDICTOR_SUBMIT_AFTER_ROUND_WINDOW_SEC = 50
 STAKE_BASE_USD = Decimal(os.getenv("STAKE_BASE_USD", "1.0"))
 STAKE_MAX_USD = Decimal(os.getenv("STAKE_MAX_USD", "1.0"))
-# Martingale (predictor): start at ``MARTINGALE_BASE_USD`` (default $1). Win → back to base.
-# Loss → double the amount just risked ($1→$2→$4→…), capped at ``MARTINGALE_MAX_STAKE_USD`` (default $16).
-# Lose at cap → reset to base and restart the ladder (no bot stop).
-MARTINGALE_BASE_USD = Decimal(os.getenv("MARTINGALE_BASE_USD", "1"))
+# Martingale (predictor): base stake after win; doubles on loss up to max cap.
+_mg_base_raw = os.getenv("MARTINGALE_BASE_USD", "").strip()
+_mb_raw = os.getenv("MARKET_BUY_USD", "").strip()
+if _mg_base_raw:
+    MARTINGALE_BASE_USD = Decimal(_mg_base_raw)
+elif _mb_raw:
+    MARTINGALE_BASE_USD = Decimal(_mb_raw)
+else:
+    MARTINGALE_BASE_USD = Decimal("1")
 MARTINGALE_MAX_STAKE_USD = Decimal(os.getenv("MARTINGALE_MAX_STAKE_USD", "16"))
 # ``polymarket`` (default): poll Gamma API until closed with winner (accurate, waits up to 5 min).
 # ``candle``: Coinbase 5m OHLC (fast but may disagree with Chainlink oracle on close calls).
@@ -960,8 +979,47 @@ class IntegratedBTCStrategy(Strategy):
         return PREDICTOR_EVAL_POST_END_SEC
 
     def _predictor_slugs_to_skip_after_submit(self) -> int:
-        """Always skip one even round between odd targets (1 → 3 → 5 …)."""
-        return 1
+        """Full 5m bars to skip after each scored bet before re-arming."""
+        return max(0, min(24, PREDICTOR_FULL_SLUGS_TO_SKIP_AFTER_SCORE))
+
+    def _predictor_passes_quality_gates(
+        self,
+        signal: str,
+        score: float,
+        candle_ctx: Optional[dict],
+    ) -> bool:
+        """Return False when signal should be skipped (weak or misaligned)."""
+        if abs(score) < PREDICTOR_MIN_SCORE:
+            order_logger.info(
+                f"Predictor: SKIP weak signal (|score|={abs(score):.4f} < min {PREDICTOR_MIN_SCORE})"
+            )
+            return False
+
+        if PREDICTOR_REQUIRE_TREND_ALIGN:
+            prices = list(self._predictor.prices)
+            if len(prices) >= 7:
+                trend = prices[-1] - prices[max(0, len(prices) - 7)]
+                if (signal == "UP" and trend < 0) or (signal == "DOWN" and trend > 0):
+                    order_logger.info(
+                        f"Predictor: SKIP trend misalignment (signal={signal}, trend={trend:+.6f})"
+                    )
+                    return False
+
+        if PREDICTOR_REQUIRE_CANDLE_ALIGN and candle_ctx:
+            cur_ret = float(candle_ctx.get("cur_5m_return") or 0.0)
+            if (signal == "UP" and cur_ret < 0) or (signal == "DOWN" and cur_ret > 0):
+                order_logger.info(
+                    f"Predictor: SKIP candle misalignment (signal={signal}, cur_5m={cur_ret:+.4%})"
+                )
+                return False
+
+        if PREDICTOR_REQUIRE_VOLUME_CONFIRM:
+            total_vol = self._latest_buy_vol + self._latest_sell_vol
+            if total_vol <= 0:
+                order_logger.info("Predictor: SKIP — no volume confirmation")
+                return False
+
+        return True
 
     def _predictor_slug_for_round(self, round_idx: int) -> int:
         return self._predictor_anchor_slug_ts + int(round_idx) * MARKET_INTERVAL_SECONDS
@@ -1794,9 +1852,9 @@ class IntegratedBTCStrategy(Strategy):
             # Stability gate
             if not self._market_stable:
                 self._stable_tick_count += 1
-                if self._stable_tick_count >= 1:
+                if self._stable_tick_count >= QUOTE_STABILITY_REQUIRED:
                     self._market_stable = True
-                    logger.info(f"✓ Market STABLE immediately")
+                    logger.info(f"✓ Market STABLE ({self._stable_tick_count} ticks)")
                 else:
                     return
 
@@ -2130,6 +2188,9 @@ class IntegratedBTCStrategy(Strategy):
                 else:
                     signal = "UP"
                     score = 0.0
+            if not self._predictor_passes_quality_gates(signal, score, candle_ctx):
+                return
+
             conf = "strong" if abs(score) >= PREDICTOR_MIN_SCORE else "weak"
             order_logger.info(
                 f"Predictor: {signal} (score={score}, confidence={conf})"
@@ -2167,13 +2228,9 @@ class IntegratedBTCStrategy(Strategy):
             placed_ok = False
             if is_simulation:
                 logger.warning(
-                    "Predictor: SIMULATION — recording paper trade only (no CLOB submit). "
-                    "Use `python bot.py --live` and Redis simulation_mode=0 for real orders."
+                    "Predictor: SIMULATION — logging to log.txt only (no CLOB submit). "
+                    "Use `--live` for real orders."
                 )
-                fused = self._synthetic_fused_for_trend(
-                    Decimal("0.61") if direction == "long" else Decimal("0.39")
-                )
-                await self._record_paper_trade(fused, stake, Decimal("0.50"), direction)
                 placed_ok = True
             else:
                 os.environ["MARKET_BUY_USD"] = f"{float(stake):.2f}"
@@ -3219,8 +3276,8 @@ def run_integrated_bot(simulation: bool = False, enable_grafana: bool = True, te
     global _graceful_shutdown_requested, _last_graceful_stop_reason
 
     print("=" * 80)
-    print("INTEGRATED POLYMARKET BTC 5-MIN TRADING BOT")
-    print("Nautilus + 7-Phase System + Redis Control")
+    print(f"INTEGRATED POLYMARKET BTC 5-MIN TRADING BOT v{BOT_VERSION}")
+    print("Nautilus + Predictor + Redis Control")
     print("=" * 80)
 
     redis_client = init_redis()
@@ -3281,7 +3338,8 @@ def run_integrated_bot(simulation: bool = False, enable_grafana: bool = True, te
     print(f"  Initial Mode: {'SIMULATION' if simulation else 'LIVE TRADING'}")
     print(f"  Redis Control: {'Enabled' if redis_client else 'Disabled'}")
     print(f"  Grafana: {'Enabled' if enable_grafana else 'Disabled'}")
-    print(f"  Max Trade Size (initial env): ${os.getenv('MARKET_BUY_USD', '10.00')}")
+    print(f"  Base stake (martingale): ${MARTINGALE_BASE_USD} (max ${MARTINGALE_MAX_STAKE_USD})")
+    print(f"  Plan: {BOT_PLAN} | Min score filter: {PREDICTOR_MIN_SCORE}")
     print(
         f"  Predictor Martingale: ${float(MARTINGALE_BASE_USD):.0f} on win; "
         f"on each loss double the last stake until ${float(MARTINGALE_MAX_STAKE_USD):.0f} "
